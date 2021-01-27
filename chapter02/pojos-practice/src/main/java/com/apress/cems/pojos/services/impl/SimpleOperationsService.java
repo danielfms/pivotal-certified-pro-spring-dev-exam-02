@@ -66,6 +66,8 @@ public class SimpleOperationsService implements OperationsService {
 
         // create a criminal case instance
         CriminalCase criminalCase = new CriminalCase();
+        criminalCase.setType(caseType);
+        criminalCase.setShortDescription(shortDescription);
         // TODO 2. set fields; use ifPresent(..) to set(or not) the leadDetective field
         detective.ifPresent((x) -> {
             criminalCase.setLeadInvestigator(detective.get());
