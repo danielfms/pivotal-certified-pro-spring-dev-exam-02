@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -42,7 +43,8 @@ import javax.annotation.PreDestroy;
  * Bean that is initialized using all three techniques supported in Spring
  */
 // TODO 12. Add initialization and destroy methods to implement all three techniques specified in the book
-public class FunBean /*implements InitializingBean, DisposableBean*/ {
+@Component
+public class FunBean implements InitializingBean, DisposableBean {
     private Logger logger = LoggerFactory.getLogger(FunBean.class);
 
     private DepBean depBean;
@@ -57,5 +59,31 @@ public class FunBean /*implements InitializingBean, DisposableBean*/ {
         this.depBean = depBean;
     }
 
-    // ..
+    @PostConstruct
+    public void postConstruct(){
+        logger.info("Stage 3: Calling the postConstruct");
+    }
+
+    @Override
+    public void afterPropertiesSet(){
+        logger.info("Stage 4: Calling the afterPropertiesSet");
+    }
+
+    public void initMethod(){
+        logger.info("Stage 5: Calling the initMethod");
+    }
+
+    @PreDestroy
+    public void preDestroy(){
+        logger.info("Stage 6: Calling the preDestroy");
+    }
+
+    @Override
+    public void destroy(){
+        logger.info("Stage 7: Calling the destroy");
+    }
+
+    public void destroyMethod(){
+        logger.info("Stage 8: Calling the destroyMethod");
+    }
 }
