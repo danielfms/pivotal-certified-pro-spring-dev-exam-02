@@ -3,18 +3,18 @@ Freeware License, some rights reserved
 
 Copyright (c) 2019 Iuliana Cosmina
 
-Permission is hereby granted, free of charge, to anyone obtaining a copy 
-of this software and associated documentation files (the "Software"), 
-to work with the Software within the limits of freeware distribution and fair use. 
-This includes the rights to use, copy, and modify the Software for personal use. 
-Users are also allowed and encouraged to submit corrections and modifications 
+Permission is hereby granted, free of charge, to anyone obtaining a copy
+of this software and associated documentation files (the "Software"),
+to work with the Software within the limits of freeware distribution and fair use.
+This includes the rights to use, copy, and modify the Software for personal use.
+Users are also allowed and encouraged to submit corrections and modifications
 to the Software for the benefit of other users.
 
-It is not allowed to reuse,  modify, or redistribute the Software for 
-commercial use in any way, or for a user's educational materials such as books 
-or blog articles without prior permission from the copyright holder. 
+It is not allowed to reuse,  modify, or redistribute the Software for
+commercial use in any way, or for a user's educational materials such as books
+or blog articles without prior permission from the copyright holder.
 
-The above copyright notice and this permission notice need to be included 
+The above copyright notice and this permission notice need to be included
 in all copies or substantial portions of the software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -27,11 +27,8 @@ SOFTWARE.
 */
 package com.apress.cems.config;
 
-import com.apress.cems.pojos.repos.DetectiveRepo;
-import com.apress.cems.repos.JdbcDetectiveRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -42,9 +39,8 @@ import javax.sql.DataSource;
  */
 // TODO 10. Split this configuration class in more configuration classes
 @Configuration
-@ComponentScan(basePackages =  {"com.apress.cems.repos"})
 @PropertySource("classpath:db/datasource.properties")
-public class FullConfig {
+public class DataSourceConfig {
     @Value("${db.driverClassName}")
     private String driverClassName;
     @Value("${db.url}")
@@ -62,10 +58,5 @@ public class FullConfig {
         ds.setUsername(username);
         ds.setPassword(password);
         return ds;
-    }
-
-    @Bean
-    DetectiveRepo detectiveRepo(){
-        return new JdbcDetectiveRepo(dataSource());
     }
 }

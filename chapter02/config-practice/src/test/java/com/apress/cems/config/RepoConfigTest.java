@@ -44,8 +44,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 // TODO 11. Modify this test class to use more than one configuration class
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {FullConfig.class})
-public class FullConfigTest {
+@ContextConfiguration(classes = {DataSourceConfig.class, RepoConfig.class})
+public class RepoConfigTest {
 
     @Autowired
     EvidenceRepo evidenceRepo;
