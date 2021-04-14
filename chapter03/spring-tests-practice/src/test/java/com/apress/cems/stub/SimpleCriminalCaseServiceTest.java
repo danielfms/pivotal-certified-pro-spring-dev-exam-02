@@ -35,6 +35,10 @@ import com.apress.cems.util.Rank;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.apress.cems.stub.util.TestObjectsBuilder.buildDetective;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,7 +52,6 @@ public class SimpleCriminalCaseServiceTest {
     final Detective detective = buildDetective("Sherlock", "Holmes", Rank.INSPECTOR, "TS1234");
 
     StubCriminalCaseRepo repo = new StubCriminalCaseRepo();
-
     SimpleCriminalCaseService service = new SimpleCriminalCaseService();
 
     @BeforeEach
@@ -86,6 +89,8 @@ public class SimpleCriminalCaseServiceTest {
     @Test
      void deleteByIdNegative() {
         // TODO 15. Analyse the stub implementation and add a test for service.deleteById(99L)
+        assertThrows( NotFoundException.class, () ->
+                service.deleteById(99L), "No such case exists");
     }
 
     //positive test, we know that cases for this detective exist and how many
@@ -99,6 +104,9 @@ public class SimpleCriminalCaseServiceTest {
     @Test
     public void findByLeadNegative() {
         // TODO 16. Analyse the stub implementation and add a test for service.findByLeadInvestigator(detective);
+        Detective detective = buildDetective("Sherlock1", "Holmes1", Rank.INSPECTOR, "TS12341");
+        var result = service.findByLeadInvestigator(detective);
+        assertNull(result);
     }
 
     @AfterEach
