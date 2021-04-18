@@ -31,9 +31,11 @@ import com.apress.cems.dao.Person;
 import com.apress.cems.ex.UnexpectedException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
@@ -42,12 +44,15 @@ import java.util.Optional;
  * @since 1.0
  */
 // TODO 20. Declare this class as an aspect
+@Aspect
+@Component
 public class PersonMonitor {
     private static final Logger logger = LoggerFactory.getLogger(PersonMonitor.class);
     private static long findByIdCount = 0;
 
     /* TODO 21. Declare this method as an Before advice and use as pointcut expression the expression
      associated with the "repoFind" from the "PointcutContainer" class */
+    @Before("com.apress.cems.aop.PointcutContainer.repoFind()")
     public void beforeFind(JoinPoint joinPoint) {
         var className = joinPoint.getSignature().getDeclaringTypeName();
         var methodName = joinPoint.getSignature().getName();
@@ -56,6 +61,7 @@ public class PersonMonitor {
 
     /* TODO 22. Declare this method as an After advice and use as pointcut expression a composed expression
      made from the "serviceFind" and "repoFind" from the "PointcutContainer" class */
+    @After("com.apress.cems.aop.PointcutContainer.repoFind() || com.apress.cems.aop.PointcutContainer.serviceFind()")
     public void afterFind(JoinPoint joinPoint) {
         ++findByIdCount;
         var methodName = joinPoint.getSignature().getName();
@@ -64,6 +70,8 @@ public class PersonMonitor {
 
      /* TODO 23. Declare this method as an AfterReturning advice and create a pointcut expression that matches any method
      with the name starting with "save" that is defined in a class with the name containing "Service" */
+    @AfterReturning(value="execution(* com.apress.cems.aop.service.*Service+.save*(..)))",
+    returning="result")
     public void afterServiceSave(JoinPoint joinPoint, Person result) {
         logger.info("[afterServiceSave]: ---> Target object {}",  joinPoint.getTarget().getClass());
         logger.info("[afterServiceSave]: ---> Was person saved? {}", (result != null));
@@ -71,6 +79,8 @@ public class PersonMonitor {
 
     /* TODO 24. Declare this method as an AfterThrowing advice and create a pointcut expression that matches any method
      with the name starting with "update" that is defined in a class with the name containing "Repo" */
+    @AfterThrowing(value="execution(* com.apress.cems.*.*Repo+.update*(..)))",
+            throwing="e")
     public void afterUpdate(JoinPoint joinPoint, Exception e) {
         var className = joinPoint.getSignature().getDeclaringTypeName();
         var methodName = joinPoint.getSignature().getName();
@@ -83,6 +93,7 @@ public class PersonMonitor {
 
     /* TODO 25. Declare this method as an Around advice and use as pointcut expression a composed expression
      made from the "serviceFind" and "repoFind" from the "PointcutContainer" class */
+    @Around("com.apress.cems.aop.PointcutContainer.repoFind() || com.apress.cems.aop.PointcutContainer.serviceFind()")
     public Object aroundFind(ProceedingJoinPoint joinPoint) throws Throwable {
         var methodName = joinPoint.getSignature().getName();
         logger.info("[aroundFind]: ---> Intercepting call of {}", methodName);
@@ -91,6 +102,8 @@ public class PersonMonitor {
             //put a pause here so we can register an execution time
             Thread.sleep(1000L);
             var obj = joinPoint.proceed();
+            Class returnType = ((MethodSignature) joinPoint.getSignature()).getReturnType();
+            logger.info("returnType {} , returnedObject {}", returnType, obj);
             return obj != null ? obj : Optional.empty();
         } finally {
             long t2 = System.currentTimeMillis();
