@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Iuliana Cosmina
  * @since 1.0
  */
-@Disabled  // remove this line to execute the test
+//@Disabled  // remove this line to execute the test
 // TODO 29. [BONUS] Write test methods to cover all methods in NamedParameterJdbcPersonRepo
 @SpringJUnitConfig(classes = {TestDbConfig.class, JdbcConfig.class})
 class NamedParameterJdbcPersonRepoTest {

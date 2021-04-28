@@ -49,7 +49,7 @@ import java.util.Set;
  * @author Iuliana Cosmina
  * @since 1.0
  */
-@Disabled // delete this line to execute this test class
+//@Disabled // delete this line to execute this test class
 @SpringJUnitConfig(classes = {TestDbConfig.class, JdbcConfig.class})
 class JdbcPersonRepoTest {
 
@@ -83,6 +83,7 @@ class JdbcPersonRepoTest {
     @Test
     void testFindByIdNegative(){
         // TODO 26: Use the JdbcTemplate instance to query for a person that does not exist and make this test pass
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> personRepo.findById(99L));
     }
 
     @Test
@@ -94,8 +95,9 @@ class JdbcPersonRepoTest {
 
     @Test
     void testFindAll(){
-        int result = 0;
+        long result = 0;
         // TODO 27: Use the JdbcTemplate instance to query for the number of rows in the PERSON table
+        result = personRepo.count();
         assertEquals(2, result);
     }
 

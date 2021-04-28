@@ -57,7 +57,7 @@ public class NamedParameterJdbcPersonRepo implements PersonRepo {
     public Optional<Person> findById(Long entityId) {
         String sql = "select ID, USERNAME, FIRSTNAME, LASTNAME, PASSWORD, HIRINGDATE from PERSON where ID= :id";
         // add NamedParameterJdbcTemplate instance call to find a person
-        return Optional.empty();
+        return Optional.of(jdbcNamedTemplate.queryForObject(sql, Map.of("id", entityId), rowMapper));
     }
 
     @Override
@@ -81,8 +81,13 @@ public class NamedParameterJdbcPersonRepo implements PersonRepo {
 
     @Override
     public int updatePassword(Long personId, String newPass) {
+        String sql = "update PERSON set PASSWORD = :pass where ID=:id";
         // add NamedParameterJdbcTemplate instance call to update the password for a person with ID= personId
-        return 0;
+        Map<String, Object> params = Map.of(
+                "pass",personId,
+                "id", personId
+        );
+        return jdbcNamedTemplate.update(sql, params);
     }
 
     @Override
@@ -135,11 +140,24 @@ public class NamedParameterJdbcPersonRepo implements PersonRepo {
 
     @Override
     public Person update(Person entity) {
-        return null;
+        Map<String, Object> params = Map.of(
+                "id", entity.getId(),
+                "un", entity.getUsername(),
+                "fn", entity.getFirstName(),
+                "ln", entity.getLastName(),
+                "password", entity.getPassword(),
+                "hd", entity.getHiringDate(),
+                "modifiedAt", LocalDateTime.now()
+        );
+        int  result = jdbcNamedTemplate.update(
+                "update into PERSON SET USERNAME=:un, FIRSTNAME=:fn, LASTNAME=:ln, PASSWORD=:password, HIRINGDATE=:hd, MODIFIED_AT=:modifiedAt where ID=:id",
+                params);
+        return result == 1 ? entity : null;
     }
 
     @Override
     public int deleteById(Long entityId) {
         // add NamedParameterJdbcTemplate instance call to delete a person
-        return 0;    }
+        return jdbcNamedTemplate.update("delete from PERSON where ID=:id", Map.of("id", entityId));
+    }
 }
