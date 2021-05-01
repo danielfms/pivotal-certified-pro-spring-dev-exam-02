@@ -27,8 +27,12 @@ SOFTWARE.
 */
 package com.apress.cems.tx.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author Iuliana Cosmina
@@ -37,5 +41,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackages = {"com.apress.cems.repos" ,"com.apress.cems.tx.services"})
 // TODO 31. Enable declarative transaction
+@EnableTransactionManagement
 public class AppConfig {
 }
