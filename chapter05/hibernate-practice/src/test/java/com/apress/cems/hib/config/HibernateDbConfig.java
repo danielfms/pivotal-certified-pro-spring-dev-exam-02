@@ -27,11 +27,15 @@ SOFTWARE.
 */
 package com.apress.cems.hib.config;
 
+import com.apress.cems.aop.service.PersonService;
+import com.apress.cems.hib.repos.HibernateRepo;
+import com.apress.cems.repos.PersonRepo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -105,6 +109,18 @@ public class HibernateDbConfig {
     }
 
     // TODO 38. Add a session factory and a transaction manager bean declaration
+    @Bean
+    public SessionFactory sessionFactory(){
+        return new LocalSessionFactoryBuilder(dataSource())
+                .scanPackages("com.apress.cems.dao")
+                .addProperties(hibernateProperties())
+                .buildSessionFactory();
+    }
+
+    @Bean
+    public PlatformTransactionManager txManager(){
+        return new HibernateTransactionManager(sessionFactory());
+    }
 
     //needed because Hibernate does not drop the database as it should
     @PostConstruct

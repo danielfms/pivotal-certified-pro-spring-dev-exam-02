@@ -27,6 +27,8 @@ SOFTWARE.
 */
 package com.apress.cems.hib.config;
 
+import com.apress.cems.hib.repos.HibernateRepo;
+import com.apress.cems.repos.PersonRepo;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -39,5 +41,4 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = {"com.apress.cems.hib.services", "com.apress.cems.hib.repos"})
 @EnableTransactionManagement
 public class AppConfig {
-
 }
