@@ -112,6 +112,21 @@ public class JpaDbConfig {
     }
 
     // TODO 39. Declare and configure the entity manager factory and the transaction manager beans.
+    @Bean
+    public EntityManagerFactory entityManagerFactory(){
+        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setPackagesToScan("com.apress.cems.dao");
+        factoryBean.setDataSource(dataSource());
+        factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        factoryBean.setJpaProperties(hibernateProperties());
+        factoryBean.afterPropertiesSet();
+        return factoryBean.getNativeEntityManagerFactory();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(){
+        return new JpaTransactionManager(entityManagerFactory());
+    }
 
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
