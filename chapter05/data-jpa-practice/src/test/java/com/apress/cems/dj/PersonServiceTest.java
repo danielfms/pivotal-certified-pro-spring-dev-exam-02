@@ -47,7 +47,6 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DataSourceConfig.class, AppConfig.class})
-@Disabled
  class PersonServiceTest {
 
     @Autowired
