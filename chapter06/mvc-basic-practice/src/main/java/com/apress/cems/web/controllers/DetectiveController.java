@@ -27,15 +27,33 @@ SOFTWARE.
 */
 package com.apress.cems.web.controllers;
 
+import com.apress.cems.dao.Person;
 import com.apress.cems.dj.services.DetectiveService;
+import com.apress.cems.dj.services.wrappers.DetectiveWrapper;
+import com.apress.cems.web.problem.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.apress.cems.dao.Detective;
+
+
+import java.util.List;
+import java.util.Optional;
+
+import static com.apress.cems.util.Functions.COMPARATOR_BY_ID;
 
 /**
  * @author Iuliana Cosmina
  * @since 1.0
  */
 // TODO 48. complete the configuration and implementation of this class so that the Detectives part of the application works too.
+@Controller
+@RequestMapping("/detectives")
 public class DetectiveController {
 
     private Logger logger = LoggerFactory.getLogger(DetectiveController.class);
@@ -44,6 +62,22 @@ public class DetectiveController {
 
     public DetectiveController(DetectiveService detectiveService) {
         this.detectiveService = detectiveService;
+    }
+
+
+    @GetMapping("/show/{id}")
+    public String show(@PathVariable("id") Long id, Model model){
+        DetectiveWrapper detectiveWrapper = detectiveService.findById(id);
+        model.addAttribute("detective", detectiveWrapper);
+        return "detectives/show";
+    }
+
+    @GetMapping("/list")
+    public String list(Model model){
+        List<Detective> detectives = detectiveService.findAll();
+        detectives.sort(COMPARATOR_BY_ID);
+        model.addAttribute("detectives", detectives);
+        return "detectives/list";
     }
 
 }
